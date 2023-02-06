@@ -1,5 +1,5 @@
 {
-    "name": "ruerdev/laravel-medialibrary",
+    "name": "spatie/laravel-medialibrary",
     "description": "Associate files with Eloquent models",
     "license": "MIT",
     "keywords": [
