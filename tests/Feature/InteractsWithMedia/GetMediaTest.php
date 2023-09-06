@@ -315,3 +315,24 @@ it('will cache loaded media', function () {
 it('returns null when getting first media for an empty collection', function () {
     expect($this->testModel->getFirstMedia())->toBeNull();
 });
+
+it('can serialize model', function () {
+    expect(unserializeAndSerializeModel($this->testModel))->toEqual($this->testModel);
+    $this->testModel->addMedia($this->getTestJpg())->preservingOriginal()->toMediaCollection('images');
+
+    expect(unserializeAndSerializeModel($this->testModel))->toEqual($this->testModel->fresh());
+});
+
+it('will get media from the all collections', function () {
+    expect($this->testModel->getMedia('images'))->toHaveCount(0);
+    expect($this->testModel->getMedia('downloads'))->toHaveCount(0);
+    expect($this->testModel->getMedia())->toHaveCount(0);
+
+    $this->testModel->addMedia($this->getTestFilesDirectory('test.jpg'))->preservingOriginal()->toMediaCollection('images');
+    $this->testModel->addMedia($this->getTestFilesDirectory('test.jpg'))->preservingOriginal()->toMediaCollection('downloads');
+    $this->testModel->addMedia($this->getTestFilesDirectory('test.jpg'))->preservingOriginal()->toMediaCollection();
+
+    $this->testModel = $this->testModel->fresh();
+
+    expect($this->testModel->getMedia('*'))->toHaveCount(3);
+});

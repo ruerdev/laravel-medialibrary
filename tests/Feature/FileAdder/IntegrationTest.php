@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\Conversions\ImageGenerators\ImageGeneratorFactory;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskCannotBeAccessed;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
@@ -327,7 +328,7 @@ it('can add a remote file with an accent in the name to the media library', func
     expect($this->getMediaDirectory("{$media->id}/AntarèsThumb.jpg"))->toBeFile();
 });
 
-it('wil thrown an exception when a remote file could not be added', function () {
+it('will thrown an exception when a remote file could not be added', function () {
     $url = 'https://docs.spatie.be/images/medialibrary/thisonedoesnotexist.jpg';
 
     $this->expectException(UnreachableUrl::class);
@@ -337,7 +338,7 @@ it('wil thrown an exception when a remote file could not be added', function () 
         ->toMediaCollection();
 });
 
-it('wil throw an exception when a remote file has an invalid mime type', function () {
+it('will throw an exception when a remote file has an invalid mime type', function () {
     $url = 'https://spatie.be/docs/laravel-medialibrary/v9/images/header.jpg';
 
     $this->expectException(MimeTypeNotAllowed::class);
@@ -652,4 +653,12 @@ it('will throw an exception and revert database when file cannot be added and mo
     )->toThrow(DiskCannotBeAccessed::class);
 
     expect(Media::count())->toBe(1);
+});
+
+it('will return null instead of an ImageGeneratorFactory when mimetype is null', function () {
+    expect(ImageGeneratorFactory::forMimeType(null))->toBeNull();
+});
+
+it('will return null instead of an ImageGeneratorFactory when extension is null', function () {
+    expect(ImageGeneratorFactory::forExtension(null))->toBeNull();
 });
